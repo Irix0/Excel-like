@@ -17,8 +17,7 @@ rows = 20
 columns = 10
 table = table(rows, columns)
 
-# Loop till true
-
+# Loop till false
 while running:
     # Set background
     window.fill("#252525")
@@ -30,13 +29,19 @@ while running:
 
     # ADD COLUMNS BUTTON
     plus = pygame.image.load('code/plus.png')
-    plus_cirlce = pygame.draw.circle(window, "#525252", (100+(columns * 50), 500), 50)
-    plus_vertical_line = pygame.draw.line(window, "#d72323", (65+(columns * 50), 500), (135+(columns * 50), 500), width=15)
-    plus_horizontal_line = pygame.draw.line(window, "#d72323", (100+(columns * 50), 500+35), (100+(columns * 50), 500-35), width=15)
+    plus = pygame.transform.scale(plus, (100, 100))
+    plus_cirlce = pygame.draw.circle(window, "#3e3636", (100 + (columns * 51), 500), 45)
+    window.blit(plus, (50+(columns * 51), 450))
 
-
-
+    # INFOS
+    columns_text = pygame.font.SysFont("Lucida Sans" , 30)
+    columns_text = columns_text.render("Columns : {}".format(columns), True, '#d72323', )
+    window.blit(columns_text, (10, 10))
+    rows_text = pygame.font.SysFont("Lucida Sans" , 30)
+    rows_text = rows_text.render("Columns : {}".format(rows), True, '#d72323', )
+    window.blit(rows_text, (250, 10))
     pygame.display.flip()
+
 
     # If user close window :
     for event in pygame.event.get():
@@ -47,6 +52,10 @@ while running:
             # needs to be copied, there's some other options.
             window.blit(old_surface_saved, (0, 0))
             del old_surface_saved
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                if plus_cirlce.collidepoint(event.pos):
+                    columns +=1
         elif event.type == pygame.QUIT:
             pygame.quit()
             running = False
