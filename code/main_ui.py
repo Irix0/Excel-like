@@ -29,9 +29,10 @@ while running:
             pygame.draw.rect(window, "#414141", rect)
 
     # ADD COLUMNS BUTTON
-    plus_cirlce = pygame.draw.circle(window, "#525252", (100+(columns * 50), 500), 20)
-    plus_vertical_line = pygame.draw.line(window, "#ca3e47", (85+(columns * 50), 500), (115+(columns * 50), 500))
-    plus_horizontal_line = pygame.draw.line(window, "#ca3e47", (100+(columns * 50), 500+15), (100+(columns * 50), 500-15))
+    plus = pygame.image.load('code/plus.png')
+    plus_cirlce = pygame.draw.circle(window, "#525252", (100+(columns * 50), 500), 50)
+    plus_vertical_line = pygame.draw.line(window, "#d72323", (65+(columns * 50), 500), (135+(columns * 50), 500), width=15)
+    plus_horizontal_line = pygame.draw.line(window, "#d72323", (100+(columns * 50), 500+35), (100+(columns * 50), 500-35), width=15)
 
 
 

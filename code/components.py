@@ -1,6 +1,7 @@
 import pygame
 import numpy as np
 
+
 class table:
     def __init__(self, rows =20, columns=20):
         table_size = rows, columns
@@ -12,5 +13,8 @@ class table:
         return self.rows
     def get_columns(self):
         return self.columns
+
+
+
 
 
