@@ -1,4 +1,5 @@
 import pygame
+import pygame_textinput
 import numpy as np
 from components import *
 
@@ -18,6 +19,16 @@ rows = 10
 columns = 10
 table = table(rows, columns)
 
+
+# RECT POSITION (for click trigger)
+def rect_position():
+    x, y = event.pos
+    if 20 < x < columns * (100 + 2) + 20 and 60 < y < rows * (60 + 2) + 60:
+        return True
+    else:
+        return False
+
+
 # Loop till false
 while running:
     # Set background
@@ -25,7 +36,7 @@ while running:
     # Create grid
     for y in range(0, rows):
         for x in range(0, columns):
-            rect = pygame.Rect(x * (100 + 2) + 20, y * (65 + 1) + 50, 100, 60)
+            rect = pygame.Rect(x * (100 + 2) + 20, y * (60 + 2) + 60, 100, 60)
             pygame.draw.rect(window, "#414141", rect)
 
     # ADD COLUMNS BUTTON
@@ -56,9 +67,19 @@ while running:
             if event.button == 1:
                 if plus_circle.collidepoint(event.pos):
                     columns += 1
-                if rect.collidepoint(event.pos):
-                    print(rect.x)
-                    print(rect.y)
+                elif rect_position():
+                    old_surface_saved = window
+                    text_input = pygame_textinput.TextInput()
+                    while True:
+                        window.blit(old_surface_saved, (0, 0))
+                        events = pygame.event.get()
+                        text_input.update(events)
+                        window.blit(text_input.get_surface(), (50, 50))
+                        pygame.display.flip()
+
+                        if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                            del old_surface_saved
+                            break
         elif event.type == pygame.QUIT:
             pygame.quit()
             running = False
