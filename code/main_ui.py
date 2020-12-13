@@ -20,13 +20,7 @@ columns = 10
 table = table(rows, columns)
 
 
-# RECT POSITION (for click trigger)
-def rect_position():
-    x, y = event.pos
-    if 20 < x < columns * (100 + 2) + 20 and 60 < y < rows * (60 + 2) + 60:
-        return True
-    else:
-        return False
+
 
 
 # Loop till false
@@ -53,9 +47,10 @@ while running:
     rows_text = rows_text.render("Columns : {}".format(rows), True, '#d72323', )
     window.blit(rows_text, (250, 10))
     pygame.display.flip()
-
+    print('Still looping')
     # If user close window :
     for event in pygame.event.get():
+        # VIDEO RESIZE EVENT
         if event.type == pygame.VIDEORESIZE:
             old_surface_saved = window
             window = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
@@ -63,23 +58,33 @@ while running:
             # needs to be copied, there's some other options.
             window.blit(old_surface_saved, (0, 0))
             del old_surface_saved
+
+        # MOUSE BUTTON DOWN EVENT
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
+                rectangle_position = Rectangle(event.pos)
                 if plus_circle.collidepoint(event.pos):
                     columns += 1
-                elif rect_position():
-                    old_surface_saved = window
-                    text_input = pygame_textinput.TextInput()
-                    while True:
-                        window.blit(old_surface_saved, (0, 0))
+                elif rectangle_position.is_ok(columns, rows):
+                    w, h = window.get_size()
+                    sub_surface = window.subsurface((0, 0, w, h)).copy()
+                    text_input = pygame_textinput.TextInput(font_family='Roboto', text_color='WHITE', cursor_color='WHITE', font_size=30)
+                    z = True
+                    while z:
+                        window.blit(sub_surface, (0, 0))
                         events = pygame.event.get()
                         text_input.update(events)
-                        window.blit(text_input.get_surface(), (50, 50))
+                        window.blit(text_input.get_surface(), (rectangle_position.get_rectangle_x(columns), rectangle_position.get_rectangle_y(rows)))
+                        # print(rectangle_position.get_rectangle_x(columns))
                         pygame.display.flip()
 
-                        if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                            del old_surface_saved
-                            break
+                        if text_input.update(events):  # TextInput.update return True if K_RETURN pressed
+                            window = sub_surface
+                            window.blit(window, (0, 0))
+                            del sub_surface
+                            z = False
+
+        # QUIT EVENT
         elif event.type == pygame.QUIT:
             pygame.quit()
             running = False
